@@ -2,7 +2,7 @@
 # 公開URL: /admin/
 
 backend:
-  name: git-github
+  name: github
   repo: "YamamotoTaijiro/herb-and-brew"
   branch: "main"
   # パーソナルアクセストークンでログイン（OAuth App の設定が不要）

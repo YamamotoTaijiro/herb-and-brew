@@ -1,0 +1,77 @@
+---
+import CardImage from './CardImage.astro';
+import { formatDate, formatPrice } from '../utils/format';
+import { link } from '../utils/url';
+
+interface Props {
+  title: string;
+  slug: string;
+  date: Date;
+  endDate?: Date;
+  time: string;
+  location: string;
+  price: number;
+  description: string;
+  image?: string;
+  status: 'open' | 'waitlist' | 'closed';
+  seed?: number;
+}
+
+const { title, slug, date, endDate, time, location, price, description, image, status, seed = 0 } =
+  Astro.props;
+
+const statusLabel = { open: '受付中', waitlist: 'キャンセル待ち', closed: '受付終了' }[status];
+const statusClass = {
+  open: 'bg-sage-100 text-sage-700',
+  waitlist: 'bg-clay-200 text-clay-600',
+  closed: 'bg-sand text-bark-400',
+}[status];
+---
+
+<a
+  href={link(`/events/${slug}/`)}
+  class="group flex flex-col overflow-hidden rounded-2xl border hairline bg-linen shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift sm:flex-row"
+>
+  <CardImage
+    src={image}
+    alt={`${title} の様子`}
+    seed={seed}
+    ratio="aspect-[4/3] sm:aspect-auto sm:w-44 sm:shrink-0"
+  />
+  <div class="flex flex-1 flex-col p-5">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class={`rounded-full px-3 py-1 text-xs font-medium ${statusClass}`}>
+        {statusLabel}
+      </span>
+      <span class="text-sm font-medium text-sage-700">
+        {formatDate(date)}
+        {endDate && endDate > date ? ` 〜 ${formatDate(endDate)}` : ''}
+      </span>
+    </div>
+    <h3 class="mt-3 font-display text-xl font-semibold text-bark-900 group-hover:text-sage-700">
+      {title}
+    </h3>
+    <p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-bark-500">
+      {description}
+    </p>
+    <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-bark-500">
+      <span class="inline-flex items-center gap-1.5">
+        <svg viewBox="0 0 24 24" class="size-4 text-sage-600" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </svg>
+        {time}
+      </span>
+      <span class="inline-flex items-center gap-1.5">
+        <svg viewBox="0 0 24 24" class="size-4 text-sage-600" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        {location}
+      </span>
+      <span class="ml-auto font-display font-semibold text-sage-700">
+        {formatPrice(price)}
+      </span>
+    </div>
+  </div>
+</a>

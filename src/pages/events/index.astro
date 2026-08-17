@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import EventCard from '../../components/EventCard.astro';
+
+const now = new Date();
+const all = (await getCollection('events')).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime()
+);
+const upcoming = all.filter((e) => e.data.date >= now);
+const past = all.filter((e) => e.data.date < now).reverse();
+---
+
+<Base title="イベント" description="ハーバルティーの調合ワークショップや試飲会など、イベント情報です。">
+  <section class="border-b hairline bg-gradient-to-b from-sage-100 to-cream">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+      <SectionHeading
+        eyebrow="EVENTS"
+        title="イベント"
+        description="調合ワークショップや試飲会など、ハーブの香りと味に触れていただけるイベントを開催しています。"
+      />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14 md:py-16">
+    <h2 class="mb-8 flex items-center gap-3 font-display text-2xl font-semibold text-bark-900">
+      <span class="size-2 rounded-full bg-sage-500"></span>
+      今後のイベント
+    </h2>
+    <div class="space-y-5">
+      {upcoming.length > 0 ? (
+        upcoming.map((event, i) => (
+          <EventCard
+            title={event.data.title}
+            slug={event.id}
+            date={event.data.date}
+            endDate={event.data.endDate}
+            time={event.data.time}
+            location={event.data.location}
+            price={event.data.price}
+            description={event.data.description}
+            image={event.data.image}
+            status={event.data.status}
+            seed={i}
+          />
+        ))
+      ) : (
+        <p class="rounded-2xl border hairline bg-linen p-8 text-center text-bark-500">
+          現在、予定されているイベントはありません。
+        </p>
+      )}
+    </div>
+
+    {past.length > 0 && (
+      <>
+        <h2 class="mb-8 mt-16 flex items-center gap-3 font-display text-2xl font-semibold text-bark-900">
+          <span class="size-2 rounded-full bg-sand"></span>
+          過去のイベント
+        </h2>
+        <div class="space-y-5 opacity-80">
+          {past.map((event, i) => (
+            <EventCard
+              title={event.data.title}
+              slug={event.id}
+              date={event.data.date}
+              endDate={event.data.endDate}
+              time={event.data.time}
+              location={event.data.location}
+              price={event.data.price}
+              description={event.data.description}
+              image={event.data.image}
+              status={event.data.status}
+              seed={i + 1}
+            />
+          ))}
+        </div>
+      </>
+    )}
+  </section>
+</Base>

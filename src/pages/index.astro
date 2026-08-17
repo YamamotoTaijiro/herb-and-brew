@@ -1,0 +1,202 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import BlendCard from '../components/BlendCard.astro';
+import EventCard from '../components/EventCard.astro';
+import { site } from '../data/site';
+import { link } from '../utils/url';
+
+const now = new Date();
+const [allBlends, allEvents] = await Promise.all([
+  getCollection('blends'),
+  getCollection('events'),
+]);
+
+const featuredBlends = allBlends
+  .filter((b) => b.data.featured)
+  .sort((a, b) => a.data.title.localeCompare(b.data.title, 'ja'));
+const blends = featuredBlends.length > 0 ? featuredBlends : allBlends.slice(0, 3);
+
+const upcomingEvents = allEvents
+  .filter((e) => e.data.date >= now || e.data.status !== 'closed')
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime())
+  .slice(0, 3);
+---
+
+<Base title={site.nameJa}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div
+      class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-sage-100 via-cream to-cream"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="pointer-events-none absolute -right-24 -top-24 -z-10 size-96 rounded-full bg-sage-200/40 blur-3xl"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="pointer-events-none absolute -left-20 top-40 -z-10 size-72 rounded-full bg-clay-200/40 blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <div class="mx-auto max-w-6xl px-5 pb-20 pt-20 md:pb-28 md:pt-28">
+      <p class="text-sm font-medium tracking-[0.24em] text-sage-600">
+        HERBAL TEA SALON
+      </p>
+      <h1 class="mt-5 max-w-2xl font-display text-4xl font-semibold leading-tight text-bark-900 md:text-6xl">
+        {site.tagline}
+      </h1>
+      <p class="mt-6 max-w-xl text-base leading-relaxed text-bark-500 md:text-lg">
+        {site.description}
+      </p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a
+          href={link('/blends/')}
+          class="rounded-full bg-sage-600 px-7 py-3 text-sm font-medium text-cream shadow-soft transition-colors hover:bg-sage-700"
+        >
+          ブレンドを見る
+        </a>
+        <a
+          href={link('/events/')}
+          class="rounded-full border border-sage-300 bg-linen px-7 py-3 text-sm font-medium text-sage-700 transition-colors hover:bg-sage-50"
+        >
+          イベントを探す
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <section class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+    <div class="grid items-center gap-10 md:grid-cols-2">
+      <div class="order-2 md:order-1">
+        <SectionHeading
+          eyebrow="ABOUT"
+          title="小さな店で、心を整める一杯を"
+          description=""
+        />
+        <div class="mt-5 space-y-4 text-bark-600">
+          <p>
+            ハーブ＆ブリューは、ハーバルティーの調合と試飲を楽しむ小さなサロンです。
+            旬のハーブを厳選し、ひとつひとつ丁寧に調合したオリジナルブレンドを、
+            おうちでも楽しんでいただけます。
+          </p>
+          <p>
+            調合ワークショップや試飲会を通じて、ハーブの香りと味の世界に触れて
+            いただく時間も大切にしています。
+          </p>
+        </div>
+        <a
+          href={link('/about/')}
+          class="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-sage-700 hover:gap-2.5 transition-all"
+        >
+          店舗紹介を読む →
+        </a>
+      </div>
+      <div class="order-1 grid grid-cols-2 gap-4 md:order-2">
+        <div class="space-y-4">
+          <div class="rounded-2xl bg-sage-600 p-6 text-cream shadow-soft">
+            <p class="font-display text-3xl font-semibold">6+</p>
+            <p class="mt-1 text-sm text-sage-100">オリジナルブレンド</p>
+          </div>
+          <div class="rounded-2xl bg-linen p-6 shadow-soft">
+            <p class="font-display text-3xl font-semibold text-sage-700">月2回</p>
+            <p class="mt-1 text-sm text-bark-500">イベント開催</p>
+          </div>
+        </div>
+        <div class="space-y-4 pt-8">
+          <div class="rounded-2xl bg-linen p-6 shadow-soft">
+            <p class="font-display text-3xl font-semibold text-clay-500">100%</p>
+            <p class="mt-1 text-sm text-bark-500">国産・厳選ハーブ</p>
+          </div>
+          <div class="rounded-2xl bg-clay-200 p-6 shadow-soft">
+            <p class="font-display text-3xl font-semibold text-clay-600">丁寧</p>
+            <p class="mt-1 text-sm text-bark-600">手作業の調合</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming events -->
+  <section class="bg-linen py-16 md:py-20">
+    <div class="mx-auto max-w-6xl px-5">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <SectionHeading eyebrow="EVENTS" title="今後のイベント" description="" />
+        <a href={link('/events/')} class="text-sm font-medium text-sage-700 hover:underline">
+          すべて見る →
+        </a>
+      </div>
+      <div class="mt-10 space-y-5">
+        {upcomingEvents.length > 0 ? (
+          upcomingEvents.map((event, i) => (
+            <EventCard
+              title={event.data.title}
+              slug={event.id}
+              date={event.data.date}
+              endDate={event.data.endDate}
+              time={event.data.time}
+              location={event.data.location}
+              price={event.data.price}
+              description={event.data.description}
+              image={event.data.image}
+              status={event.data.status}
+              seed={i + 1}
+            />
+          ))
+        ) : (
+          <p class="rounded-2xl border hairline bg-cream p-8 text-center text-bark-500">
+            現在、予定されているイベントはありません。
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured blends -->
+  <section class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeading
+        eyebrow="BLENDS"
+        title="おすすめのブレンド"
+        description="調合したオリジナルブレンドを、おうちでも。"
+      />
+      <a href={link('/blends/')} class="text-sm font-medium text-sage-700 hover:underline">
+        すべて見る →
+      </a>
+    </div>
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {blends.map((blend, i) => (
+        <BlendCard
+          title={blend.data.title}
+          slug={blend.id}
+          description={blend.data.description}
+          price={blend.data.price}
+          weight={blend.data.weight}
+          image={blend.data.image}
+          seed={i}
+        />
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="mx-auto max-w-6xl px-5 pb-8">
+    <div class="overflow-hidden rounded-3xl bg-sage-700 px-8 py-14 text-center shadow-lift md:px-16">
+      <h2 class="font-display text-2xl font-semibold text-cream md:text-3xl">
+        香りで、気持ちを整える時間に
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl text-sage-100">
+        調合ワークショップや試飲会に、ぜひお越しください。
+        自分だけの一杯に出会えるかもしれません。
+      </p>
+      <a
+        href={link('/events/')}
+        class="mt-8 inline-block rounded-full bg-cream px-8 py-3 text-sm font-medium text-sage-800 transition-colors hover:bg-sand"
+      >
+        イベントを探す
+      </a>
+    </div>
+  </section>
+</Base>

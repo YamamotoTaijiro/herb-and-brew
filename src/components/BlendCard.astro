@@ -1,0 +1,43 @@
+---
+import CardImage from './CardImage.astro';
+import { link } from '../utils/url';
+
+interface Props {
+  title: string;
+  slug: string;
+  description: string;
+  price: number;
+  weight: string;
+  image?: string;
+  seed?: number;
+}
+
+const { title, slug, description, price, weight, image, seed = 0 } = Astro.props;
+---
+
+<a
+  href={link(`/blends/${slug}/`)}
+  class="group flex flex-col overflow-hidden rounded-2xl border hairline bg-linen shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
+>
+  <CardImage src={image} alt={`${title} のパッケージ`} seed={seed} ratio="aspect-[4/3]" />
+  <div class="flex flex-1 flex-col p-5">
+    <div class="flex items-start justify-between gap-3">
+      <h3 class="font-display text-lg font-semibold text-bark-900 group-hover:text-sage-700">
+        {title}
+      </h3>
+      <span class="shrink-0 text-xs text-bark-400">{weight}</span>
+    </div>
+    <p class="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-bark-500">
+      {description}
+    </p>
+    <div class="mt-4 flex items-center justify-between">
+      <span class="font-display text-lg font-semibold text-sage-700">
+        ¥{price.toLocaleString('ja-JP')}
+        <span class="ml-1 text-xs font-normal text-bark-400">(税込)</span>
+      </span>
+      <span class="text-sm text-sage-600 transition-transform duration-300 group-hover:translate-x-1">
+        見る →
+      </span>
+    </div>
+  </div>
+</a>

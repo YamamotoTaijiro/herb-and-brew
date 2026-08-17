@@ -1,0 +1,97 @@
+---
+import { site, nav } from '../data/site';
+import { link } from '../utils/url';
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/'
+    ? currentPath === '/'
+    : currentPath.startsWith(href);
+---
+
+<header class="sticky top-0 z-40 border-b hairline bg-cream/90 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <a href={link('/')} class="flex items-center gap-2.5">
+      <span class="grid size-9 place-items-center rounded-full bg-sage-600 text-cream">
+        <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+          <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+        </svg>
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-lg font-semibold text-bark-900">{site.nameJa}</span>
+        <span class="text-[0.65rem] tracking-[0.2em] text-bark-400">{site.name}</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-8 md:flex" aria-label="メイン">
+      {nav.map((item) => (
+        <a
+          href={link(item.href)}
+          class:list={[
+            'text-sm transition-colors',
+            isActive(item.href)
+              ? 'font-medium text-sage-700'
+              : 'text-bark-600 hover:text-sage-700',
+          ]}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        href={link('/blends/')}
+        class="rounded-full bg-sage-600 px-5 py-2 text-sm font-medium text-cream transition-colors hover:bg-sage-700"
+      >
+        ブレンドを見る
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="grid size-10 place-items-center rounded-full text-bark-700 hover:bg-sage-100 md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="メニューを開く"
+    >
+      <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+  </div>
+
+  <nav
+    id="mobile-menu"
+    class="hidden border-t hairline bg-cream px-5 py-3 md:hidden"
+    aria-label="モバイル"
+  >
+    <ul class="flex flex-col gap-1">
+      {nav.map((item) => (
+        <li>
+          <a
+            href={link(item.href)}
+            class:list={[
+              'block rounded-lg px-3 py-2.5 text-sm',
+              isActive(item.href)
+                ? 'bg-sage-100 font-medium text-sage-800'
+                : 'text-bark-700 hover:bg-sage-50',
+            ]}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  toggle?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+  });
+</script>

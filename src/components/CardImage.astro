@@ -1,0 +1,36 @@
+---
+interface Props {
+  src?: string;
+  alt: string;
+  seed?: number;
+  ratio?: string;
+  className?: string;
+}
+
+const { src, alt, seed = 0, ratio = 'aspect-[4/3]', className = '' } = Astro.props;
+
+const palettes = [
+  'from-sage-200 via-sage-100 to-sand',
+  'from-clay-200 via-sand to-sage-100',
+  'from-sage-300 via-sage-200 to-linen',
+  'from-sand via-clay-200 to-sage-100',
+];
+const palette = palettes[seed % palettes.length];
+---
+
+<div class:list={['relative overflow-hidden bg-sage-100', ratio, className]}>
+  {src ? (
+    <img src={src} alt={alt} loading="lazy" class="h-full w-full object-cover" />
+  ) : (
+    <div
+      class={`grid h-full w-full place-items-center bg-gradient-to-br ${palette}`}
+      role="img"
+      aria-label={alt}
+    >
+      <svg viewBox="0 0 24 24" class="size-12 text-sage-600/50" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+        <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+      </svg>
+    </div>
+  )}
+</div>

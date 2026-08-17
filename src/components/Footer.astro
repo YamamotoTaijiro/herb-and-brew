@@ -1,0 +1,62 @@
+---
+import { site, nav } from '../data/site';
+import { link } from '../utils/url';
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-20 border-t hairline bg-linen">
+  <div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.5fr_1fr_1fr]">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <span class="grid size-9 place-items-center rounded-full bg-sage-600 text-cream">
+          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+            <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+          </svg>
+        </span>
+        <span class="font-display text-lg font-semibold text-bark-900">{site.nameJa}</span>
+      </div>
+      <p class="mt-4 max-w-sm text-sm leading-relaxed text-bark-500">
+        {site.tagline}
+        <br />
+        {site.description}
+      </p>
+    </div>
+
+    <nav aria-label="フッター">
+      <h2 class="text-xs font-medium tracking-[0.18em] text-bark-400">MENU</h2>
+      <ul class="mt-4 space-y-2.5">
+        {nav.map((item) => (
+          <li>
+            <a href={link(item.href)} class="text-sm text-bark-600 transition-colors hover:text-sage-700">
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="text-xs font-medium tracking-[0.18em] text-bark-400">STORE</h2>
+      <address class="mt-4 space-y-2.5 text-sm not-italic text-bark-600">
+        <p>{site.address}</p>
+        <p>
+          <a href={`mailto:${site.email}`} class="transition-colors hover:text-sage-700">
+            {site.email}
+          </a>
+        </p>
+        <p>
+          <a href={site.social.instagram} class="transition-colors hover:text-sage-700" target="_blank" rel="noopener noreferrer">
+            Instagram
+          </a>
+        </p>
+      </address>
+    </div>
+  </div>
+
+  <div class="border-t hairline">
+    <p class="mx-auto max-w-6xl px-5 py-5 text-xs text-bark-400">
+      © {year} {site.nameJa} / {site.name}. All rights reserved.
+    </p>
+  </div>
+</footer>

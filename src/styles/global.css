@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  /* Warm neutrals */
+  --color-cream: #f7f4ed;
+  --color-linen: #fbf9f4;
+  --color-sand: #ece5d6;
+
+  /* Sage green (primary) */
+  --color-sage-50: #f3f6ef;
+  --color-sage-100: #e4ebdb;
+  --color-sage-200: #cbd8bc;
+  --color-sage-300: #aec399;
+  --color-sage-400: #8ca876;
+  --color-sage-500: #6f8c57;
+  --color-sage-600: #587146;
+  --color-sage-700: #465938;
+  --color-sage-800: #38472d;
+  --color-sage-900: #2c3823;
+
+  /* Bark (warm darks for text) */
+  --color-bark-400: #857c6c;
+  --color-bark-500: #6b6355;
+  --color-bark-600: #554e42;
+  --color-bark-700: #443e34;
+  --color-bark-800: #332e26;
+  --color-bark-900: #262219;
+
+  /* Clay (warm accent) */
+  --color-clay-200: #e8cdae;
+  --color-clay-300: #d9b48f;
+  --color-clay-400: #c99b6c;
+  --color-clay-500: #b9835a;
+  --color-clay-600: #9e6a44;
+
+  /* Typography */
+  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho",
+    serif;
+  --font-sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    "Yu Gothic", Meiryo, sans-serif;
+
+  /* Shadows */
+  --shadow-soft: 0 1px 2px rgba(38, 34, 25, 0.04),
+    0 8px 24px -12px rgba(38, 34, 25, 0.18);
+  --shadow-lift: 0 2px 4px rgba(38, 34, 25, 0.05),
+    0 18px 40px -18px rgba(38, 34, 25, 0.28);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-bark-800);
+    font-family: var(--font-sans);
+    line-height: 1.9;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-bark-900);
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  ::selection {
+    background-color: var(--color-sage-200);
+    color: var(--color-bark-900);
+  }
+}
+
+@layer utilities {
+  /* Subtle top border used to separate sections */
+  .hairline {
+    border-color: color-mix(in srgb, var(--color-bark-900) 12%, transparent);
+  }
+
+  .prose-herb p {
+    margin-block: 1.1em;
+  }
+
+  .prose-herb h2,
+  .prose-herb h3 {
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    font-size: 1.25rem;
+  }
+
+  .prose-herb ul {
+    list-style: disc;
+    padding-left: 1.4em;
+    margin-block: 1em;
+  }
+
+  .prose-herb li {
+    margin-block: 0.35em;
+  }
+
+  .prose-herb a {
+    color: var(--color-sage-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose-herb strong {
+    color: var(--color-bark-900);
+    font-weight: 600;
+  }
+}

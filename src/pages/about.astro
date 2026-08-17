@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { site } from '../data/site';
+---
+
+<Base title="店舗紹介" description="ハーブ＆ブリューという店と、私たちの想いをご紹介します。">
+  <section class="border-b hairline bg-gradient-to-b from-sage-100 to-cream">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+      <SectionHeading eyebrow="ABOUT" title="店舗紹介" />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-5 py-14 md:py-16">
+    <div class="space-y-6 text-[1.05rem] leading-relaxed text-bark-700">
+      <p>
+        ハーブ＆ブリュー（{site.name}）は、{site.address}にある小さなハーブティーサロンです。
+        「香りで、気持ちを整える時間」をテーマに、ハーバルティーの調合と試飲、
+        オリジナルブレンドの販売を行っています。
+      </p>
+      <p>
+        私たちは、ハーブを「飲むもの」であると同時に、「触れ、香り、味わうもの」として
+        捉えています。畑で育ったハーブの葉や花を、旬のうちに厳選し、ひとつひとつ丁寧に
+        調合することで、その日そのときの気分に寄り添う一杯をお届けしたいと考えています。
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-3">
+      <div class="rounded-2xl bg-linen p-6 text-center shadow-soft">
+        <p class="font-display text-2xl font-semibold text-sage-700">厳選</p>
+        <p class="mt-2 text-sm text-bark-500">旬の国産・厳選ハーブを使用</p>
+      </div>
+      <div class="rounded-2xl bg-linen p-6 text-center shadow-soft">
+        <p class="font-display text-2xl font-semibold text-sage-700">調合</p>
+        <p class="mt-2 text-sm text-bark-500">手作業で丁寧に調合</p>
+      </div>
+      <div class="rounded-2xl bg-linen p-6 text-center shadow-soft">
+        <p class="font-display text-2xl font-semibold text-sage-700">体験</p>
+        <p class="mt-2 text-sm text-bark-500">調合・試飲の時間を提供</p>
+      </div>
+    </div>
+
+    <div class="mt-12 rounded-3xl border hairline bg-linen p-8 shadow-soft">
+      <h2 class="font-display text-xl font-semibold text-bark-900">店舗情報</h2>
+      <dl class="mt-5 space-y-3 text-sm text-bark-600">
+        <div class="flex gap-3">
+          <dt class="w-16 shrink-0 text-bark-400">店名</dt>
+          <dd>{site.nameJa}（{site.name}）</dd>
+        </div>
+        <div class="flex gap-3">
+          <dt class="w-16 shrink-0 text-bark-400">住所</dt>
+          <dd>{site.address}</dd>
+        </div>
+        <div class="flex gap-3">
+          <dt class="w-16 shrink-0 text-bark-400">営業</dt>
+          <dd>水曜 〜 日曜 11:00 - 19:00（月・火定休）</dd>
+        </div>
+        <div class="flex gap-3">
+          <dt class="w-16 shrink-0 text-bark-400">連絡先</dt>
+          <dd>
+            <a href={`mailto:${site.email}`} class="text-sage-700 hover:underline">
+              {site.email}
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+</Base>

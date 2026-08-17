@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import BlendCard from '../../components/BlendCard.astro';
+
+const blends = (await getCollection('blends')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title, 'ja')
+);
+---
+
+<Base title="ブレンド" description="調合したオリジナルハーバルティーのブレンド一覧です。">
+  <section class="border-b hairline bg-gradient-to-b from-sage-100 to-cream">
+    <div class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+      <SectionHeading
+        eyebrow="BLENDS"
+        title="オリジナルブレンド"
+        description="旬のハーブを厳選し、ひとつひとつ丁寧に調合したオリジナルブレンドです。お気に入りの一杯を見つけてください。"
+      />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14 md:py-16">
+    <p class="mb-8 text-sm text-bark-400">
+      全 {blends.length} 種
+    </p>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {blends.map((blend, i) => (
+        <BlendCard
+          title={blend.data.title}
+          slug={blend.id}
+          description={blend.data.description}
+          price={blend.data.price}
+          weight={blend.data.weight}
+          image={blend.data.image}
+          seed={i}
+        />
+      ))}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,145 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CardImage from '../../components/CardImage.astro';
+import BlendCard from '../../components/BlendCard.astro';
+import { formatPrice } from '../../utils/format';
+import { link } from '../../utils/url';
+
+export async function getStaticPaths() {
+  const blends = await getCollection('blends');
+  return blends.map((blend) => ({
+    params: { slug: blend.id },
+    props: { blend },
+  }));
+}
+
+const { blend } = Astro.props;
+const { data } = blend;
+const { Content } = await render(blend);
+
+const allBlends = (await getCollection('blends')).filter((b) => b.id !== blend.id);
+const related = allBlends.slice(0, 3);
+
+const buyUrl = data.buyUrl || '#';
+const hasBuyUrl = Boolean(data.buyUrl);
+---
+
+<Base title={data.title} description={data.description}>
+  <article class="mx-auto max-w-6xl px-5 py-12 md:py-16">
+    <nav class="mb-8 text-sm text-bark-400" aria-label="パンくず">
+      <a href={link('/')} class="hover:text-sage-700">ホーム</a>
+      <span class="mx-2">/</span>
+      <a href={link('/blends/')} class="hover:text-sage-700">ブレンド</a>
+      <span class="mx-2">/</span>
+      <span class="text-bark-600">{data.title}</span>
+    </nav>
+
+    <div class="grid gap-10 md:grid-cols-2">
+      <CardImage
+        src={data.image}
+        alt={`${data.title} のパッケージ`}
+        ratio="aspect-square"
+        className="rounded-3xl shadow-soft"
+      />
+
+      <div class="flex flex-col">
+        <h1 class="font-display text-3xl font-semibold text-bark-900 md:text-4xl">
+          {data.title}
+        </h1>
+        <p class="mt-4 text-bark-500">{data.description}</p>
+
+        <dl class="mt-8 grid grid-cols-2 gap-4">
+          <div class="rounded-2xl bg-linen p-5 shadow-soft">
+            <dt class="text-xs tracking-[0.16em] text-bark-400">価格</dt>
+            <dd class="mt-1 font-display text-2xl font-semibold text-sage-700">
+              {formatPrice(data.price)}
+              <span class="ml-1 text-xs font-normal text-bark-400">(税込)</span>
+            </dd>
+          </div>
+          <div class="rounded-2xl bg-linen p-5 shadow-soft">
+            <dt class="text-xs tracking-[0.16em] text-bark-400">内容量</dt>
+            <dd class="mt-1 font-display text-2xl font-semibold text-bark-800">
+              {data.weight}
+            </dd>
+          </div>
+        </dl>
+
+        <div class="mt-6">
+          <h2 class="text-xs font-medium tracking-[0.18em] text-bark-400">配合</h2>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {data.ingredients.map((ing) => (
+              <li class="rounded-full bg-sage-100 px-4 py-1.5 text-sm text-sage-800">
+                {ing}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="mt-5">
+          <h2 class="text-xs font-medium tracking-[0.18em] text-bark-400">こんなときに</h2>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {data.effects.map((effect) => (
+              <li class="rounded-full bg-clay-200 px-4 py-1.5 text-sm text-clay-600">
+                {effect}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="mt-8 border-t hairline pt-7">
+          {hasBuyUrl ? (
+            <a
+              href={buyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-sage-600 px-8 py-4 text-base font-medium text-cream shadow-soft transition-colors hover:bg-sage-700"
+            >
+              このブレンドを購入する
+              <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 17 17 7M17 7H8M17 7v9" />
+              </svg>
+            </a>
+          ) : (
+            <div class="rounded-2xl border border-dashed border-sage-300 bg-sage-50 p-5 text-center">
+              <p class="text-sm text-bark-600">
+                オンライン販売は準備中です。
+              </p>
+              <p class="mt-1 text-xs text-bark-400">
+                お店の試飲会・イベントでもご購入いただけます。
+              </p>
+            </div>
+          )}
+          <p class="mt-4 text-center text-xs text-bark-400">
+            送料は別途いただきます。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose-herb mx-auto mt-16 max-w-3xl border-t hairline pt-12 text-[1.02rem] text-bark-700">
+      <Content />
+    </div>
+  </article>
+
+  {related.length > 0 && (
+    <section class="mx-auto max-w-6xl px-5 pb-8 pt-8">
+      <h2 class="font-display text-2xl font-semibold text-bark-900">
+        他のブレンド
+      </h2>
+      <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((b, i) => (
+          <BlendCard
+            title={b.data.title}
+            slug={b.id}
+            description={b.data.description}
+            price={b.data.price}
+            weight={b.data.weight}
+            image={b.data.image}
+            seed={i}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+</Base>

@@ -1,0 +1,62 @@
+# Decap CMS 設定
+# 公開URL: /admin/
+
+backend:
+  name: git-github
+  repo: "YamamotoTaijiro/herb-and-brew"
+  branch: "main"
+  # パーソナルアクセストークンでログイン（OAuth App の設定が不要）
+  auth_strategy: "personal_token"
+
+# 画像のアップロード先（リポジトリ内）と、サイト上での公開パス
+media_folder: "public/images"
+public_folder: "/images"
+
+# 管理画面の表示名
+locale: "ja"
+
+collections:
+  # ── ブレンド（販売商品） ─────────────────────────────
+  - name: "blends"
+    label: "ブレンド"
+    label_singular: "ブレンド"
+    folder: "src/content/blends"
+    create: true
+    preview: false
+    slug: "{{fields.slug}}"
+    summary: "{{title}}（¥{{price}}）"
+    fields:
+      - { label: "タイトル", name: "title", widget: "string" }
+      - { label: "スラッグ（URL）", name: "slug", widget: "string", hint: "英小文字・ハイフンで。例: chamomile-lavender" }
+      - { label: "説明（カード表示）", name: "description", widget: "text" }
+      - { label: "価格（税込・円）", name: "price", widget: "number", step: 1 }
+      - { label: "内容量", name: "weight", widget: "string", hint: "例: 20g" }
+      - { label: "配合", name: "ingredients", widget: "list", allow_add: true }
+      - { label: "こんなときに（効果）", name: "effects", widget: "list", allow_add: true }
+      - { label: "画像", name: "image", widget: "image", required: false }
+      - { label: "トップページに載せる", name: "featured", widget: "boolean", default: false }
+      - { label: "購入URL（Stripe決済リンク）", name: "buyUrl", widget: "string", required: false, hint: "Stripeの決済リンクを貼り付け。空欄の場合は「準備中」表示" }
+      - { label: "本文", name: "body", widget: "markdown" }
+
+  # ── イベント ───────────────────────────────────────
+  - name: "events"
+    label: "イベント"
+    label_singular: "イベント"
+    folder: "src/content/events"
+    create: true
+    preview: false
+    slug: "{{fields.slug}}"
+    summary: "{{date}} {{title}}"
+    fields:
+      - { label: "タイトル", name: "title", widget: "string" }
+      - { label: "スラッグ（URL）", name: "slug", widget: "string", hint: "英小文字・ハイフンで。例: autumn-blending-workshop" }
+      - { label: "開催日", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "終了日（複数日の場合）", name: "endDate", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, required: false }
+      - { label: "時間", name: "time", widget: "string", hint: "例: 14:00 - 16:00" }
+      - { label: "場所", name: "location", widget: "string" }
+      - { label: "定員（名）", name: "capacity", widget: "number", step: 1 }
+      - { label: "参加費（円・0で無料）", name: "price", widget: "number", step: 1 }
+      - { label: "説明（カード表示）", name: "description", widget: "text" }
+      - { label: "画像", name: "image", widget: "image", required: false }
+      - { label: "受付状況", name: "status", widget: "select", options: [{ label: "受付中", value: "open" }, { label: "キャンセル待ち", value: "waitlist" }, { label: "受付終了", value: "closed" }], default: "open" }
+      - { label: "本文", name: "body", widget: "markdown" }

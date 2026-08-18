@@ -46,16 +46,64 @@
 
 ## コンテンツの更新（管理画面）
 
-1. `public/admin/config.yml` の `repo` を自分のリポジトリに書き換える
-   （例: `repo: "taijiro/herb-and-brew"`）
-2. サイトを公開後、`https://<ユーザー名>.github.io/<リポジトリ名>/admin/` を開く
-3. 「Sign in」で GitHub の **パーソナルアクセストークン** を貼り付けてログイン
-   （トークン作成: GitHub → Settings → Developer settings → Personal access tokens →
-   Fine-grained tokens。対象リポジトリに **Contents: Read and write** 権限を付与）
-4. 「ブレンド」「イベント」から記事の追加・編集を行う
+管理画面（Decap CMS）は GitHub リポジトリに直接コミットする方式のため、GitHub の
+**OAuth認証**が必要です。GitHub Pages は静的サイトで認証サーバーを持てないため、
+認証を仲介する小さなプロキシ（[sveltia-cms-auth](https://github.com/sveltia/sveltia-cms-auth)、
+無料の Cloudflare Workers で動作）を1つデプロイする必要があります。
+
+### 1. OAuthプロキシをデプロイする（初回のみ）
+
+1. [Cloudflare](https://dash.cloudflare.com/sign-up) の無料アカウントを作成
+2. [sveltia-cms-auth](https://github.com/sveltia/sveltia-cms-auth) の README にある
+   「Deploy to Cloudflare」ボタンから Worker をデプロイ
+   （またはリポジトリを clone して `wrangler deploy`）
+3. デプロイ後に発行される Worker の URL を控える
+   （例: `https://sveltia-cms-auth.<あなたのサブドメイン>.workers.dev`）
+
+### 2. GitHub OAuth App を作成する
+
+1. GitHub → Settings → Developer settings →
+   [OAuth Apps](https://github.com/settings/applications/new) → New OAuth App
+2. 以下を設定して登録:
+   - **Homepage URL**: `https://<ユーザー名>.github.io/<リポジトリ名>/`
+   - **Authorization callback URL**: `<Workerのurl>/callback`
+3. 発行された **Client ID** と **Client Secret** を控える
+
+### 3. Worker に環境変数を設定する
+
+Cloudflare Workers のダッシュボード → 対象Worker → Settings → Variables で以下を追加:
+
+| 変数名 | 値 |
+| :-- | :-- |
+| `GITHUB_CLIENT_ID` | 手順2で発行された Client ID |
+| `GITHUB_CLIENT_SECRET` | 手順2で発行された Client Secret（Encrypt推奨） |
+| `ALLOWED_DOMAINS` | `<ユーザー名>.github.io`（サイトのホスト名） |
+
+### 4. `config.yml` を自分の環境に合わせる
+
+`public/admin/config.yml` の `repo` と `base_url` を書き換える:
+
+```yaml
+backend:
+  name: github
+  repo: "taijiro/herb-and-brew"
+  branch: "main"
+  base_url: "https://sveltia-cms-auth.<あなたのサブドメイン>.workers.dev"
+```
+
+### 5. ログインして編集する
+
+1. サイトを公開後、`https://<ユーザー名>.github.io/<リポジトリ名>/admin/` を開く
+2. 「GitHub でログインする」から GitHub アカウントでログイン
+3. 「ブレンド」「イベント」から記事の追加・編集を行う
 
 編集内容は `src/content/blends/` / `src/content/events/` 配下の Markdown ファイルとして
 リポジトリにコミットされ、GitHub Pages の再ビルドで反映されます。
+
+> ローカルでの動作確認だけでよい場合は、上記の設定は不要です。
+> `config.yml` に `local_backend: true` を追加し、`npx decap-server` と
+> `npm run dev` を同時に起動すれば、ローカルの管理画面からファイルを直接編集できます
+> （この場合、公開URLからはログインできません）。
 
 ### 各フィールドの役割（ブレンド）
 

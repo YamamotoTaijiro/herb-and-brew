@@ -5,10 +5,10 @@ backend:
   name: github
   repo: "YamamotoTaijiro/herb-and-brew"
   branch: "main"
-  # GitHub Pages は静的サイトのため、OAuth認証を仲介する小さなプロキシが別途必要。
-  # sveltia-cms-auth（Cloudflare Workers）をデプロイし、そのURLをここに設定する。
+  # GitHub Pages は静的サイトのため、OAuth認証を仲介する小さなプロキシ
+  # （sveltia-cms-auth、Cloudflare Workers）を使ってログインする。
   # セットアップ手順: README.md の「コンテンツの更新（管理画面）」を参照
-  base_url: "https://sveltia-cms-auth.YOUR_SUBDOMAIN.workers.dev"
+  base_url: "https://sveltia-cms-auth.taijiro.workers.dev"
 
 # 画像のアップロード先（リポジトリ内）と、サイト上での公開パス
 media_folder: "public/images"
